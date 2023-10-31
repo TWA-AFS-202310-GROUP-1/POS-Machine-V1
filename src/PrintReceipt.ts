@@ -19,8 +19,8 @@ interface Tag{
 }
 
 export function printReceipt(tags: string[]): string {
-  const res = parseTags(tags)
-  const aggregateRes = aggregateTags(res)
+  const parsedTags = parseTags(tags)
+  const aggregateRes = aggregateTags(parsedTags)
   const receiptItems = generateReceiptItems(aggregateRes)
   if(receiptItems === null){
     return ''
