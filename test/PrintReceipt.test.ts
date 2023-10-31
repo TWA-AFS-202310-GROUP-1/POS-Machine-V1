@@ -1,4 +1,4 @@
-import {ReceiptItem, Tag, generateReceiptItems, parseTags} from '../src/PrintReceipt'
+import {ReceiptItem, Tag, generateReceiptItems, parseTags, renderReceipt} from '../src/PrintReceipt'
 
 // describe('printReceipt', () => {
 //   it('should print receipt with promotion when print receipt', () => {
@@ -86,5 +86,46 @@ describe('printReceipt', () => {
     ]
     //then
     expect(generateReceiptItems(input)).toEqual(expectedOutput)
+  })
+
+  it('should render a receipt correctly', () => {
+    //given
+    const receiptItems = [
+      {
+        name: 'Sprite',
+        quantity: { value: 3, quantifier: 'bottle' },
+        unitPrice: 3.00,
+        subtotal: 6.00,
+        discountedPrice: 3.00
+      },
+      {
+        name: 'Litchi',
+        quantity: { value: 2.5, quantifier: 'pound' },
+        unitPrice: 15.00,
+        subtotal: 37.50,
+        discountedPrice: 0
+      },
+      {
+        name: 'Instant Noodles',
+        quantity: { value: 3, quantifier: 'bag' },
+        unitPrice: 4.50,
+        subtotal: 9.00,
+        discountedPrice: 4.50
+      }
+    ]
+
+    //when
+    const expectedReceipt =
+      "***<store earning no money>Receipt ***\n" +
+      "Name：Sprite，Quantity：3 bottle，Unit：3.00(yuan)，Subtotal：6.00(yuan)\n" +
+      "Name：Litchi，Quantity：2.5 pound，Unit：15.00(yuan)，Subtotal：37.50(yuan)\n" +
+      "Name：Instant Noodles，Quantity：3 bag，Unit：4.50(yuan)，Subtotal：9.00(yuan)\n" +
+      "----------------------\n" +
+      "Total：52.50(yuan)\n" +
+      "Discounted prices：7.50(yuan)\n" +
+      "**********************"
+
+    //then
+    expect(renderReceipt(receiptItems)).toEqual(expectedReceipt)
   })
 })

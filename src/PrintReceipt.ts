@@ -16,7 +16,7 @@ export type ReceiptItem = {
   quantity: Quantity;
   unitPrice: number;
   subtotal: number;
-  discountedPrice?: number;
+  discountedPrice: number;
 }
 
 export function parseTags(tags: string[]): Tag[] {
@@ -70,6 +70,25 @@ export function generateReceiptItems(parsedTags: Tag[]): ReceiptItem[] {
       discountedPrice: discountedPrice
     }
   })
+}
+
+export function renderReceipt(receiptItems: ReceiptItem[]): string {
+  let receipt = "***<store earning no money>Receipt ***\n"
+  let total = 0
+  let totalDiscount = 0
+
+  receiptItems.forEach(item => {
+    receipt += `Name：${item.name}，Quantity：${item.quantity.value} ${item.quantity.quantifier}，Unit：${item.unitPrice.toFixed(2)}(yuan)，Subtotal：${item.subtotal.toFixed(2)}(yuan)\n`
+    total += item.subtotal
+    totalDiscount += item.discountedPrice
+  })
+
+  receipt += "----------------------\n"
+  receipt += `Total：${total.toFixed(2)}(yuan)\n`
+  receipt += `Discounted prices：${totalDiscount.toFixed(2)}(yuan)\n`
+  receipt += "**********************"
+
+  return receipt
 }
 
 
