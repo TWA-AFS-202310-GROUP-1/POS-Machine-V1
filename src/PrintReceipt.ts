@@ -1,12 +1,46 @@
 import {loadAllItems, loadPromotions} from './Dependencies'
 
-export function printReceipt(tags: string[]): string {
-  return `***<store earning no money>Receipt ***
-Name：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)
-Name：Litchi，Quantity：2.5 pounds，Unit：15.00(yuan)，Subtotal：37.50(yuan)
-Name：Instant Noodles，Quantity：3 bags，Unit：4.50(yuan)，Subtotal：9.00(yuan)
-----------------------
-Total：58.50(yuan)
-Discounted prices：7.50(yuan)
-**********************`
+
+export type Tag = {
+  barcode: string;
+  quantity: number;
 }
+
+export type Quantity = {
+  value: number;
+  quantifier: string;
+}
+
+export type ReceiptItem = {
+  name: string;
+  quantity: Quantity;
+  unitPrice: number;
+  subtotal: number;
+  discountedPrice?: number;
+}
+
+export function parseTags(tags: string[]): Tag[] {
+  const initialTags = parseQuantity(tags);
+  return initialTags.reduce((accumulatedTags: Tag[], currentTag: Tag) => {
+    const existingTag = accumulatedTags.find(tag => tag.barcode === currentTag.barcode);
+    if (existingTag) {
+      existingTag.quantity += currentTag.quantity;
+    } else {
+      accumulatedTags.push(currentTag);
+    }
+    return accumulatedTags;
+  }, []);
+}
+
+export function parseQuantity(tags: string[]): Tag[]  {
+  return tags.map(tag => {
+    const [barcode, quantity] = tag.split('-');
+    return {
+      barcode: barcode,
+      quantity: quantity ? parseFloat(quantity) : 1
+    };
+});
+}
+
+
+
