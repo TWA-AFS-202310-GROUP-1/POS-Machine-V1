@@ -20,7 +20,8 @@ interface Tag{
 
 export function printReceipt(tags: string[]): string {
   const res = parseTags(tags)
-  console.log(aggregateTags(res))
+  const aggregateRes = aggregateTags(res)
+  console.log(generateReceiptItems(aggregateRes))
 
   return `***<store earning no money>Receipt ***
 Name：Sprite，Quantity：5 bottles，Unit：3.00(yuan)，Subtotal：12.00(yuan)
@@ -65,4 +66,42 @@ function aggregateTags(tags: Tag[]): Tag[]{
   return parseTags
 }
 
+function generateReceiptItems(parsedTags: Tag[]): ReceiptItem[] | null{
+  const receiptItemList: ReceiptItem[] = []
+  const items = loadAllItems()
+  const barcodeList = Array.from(items, x => x.barcode)
+  for(const tag of parsedTags){
+    if(!barcodeList.indexOf(tag.barcode)){
+      return null
+    }
+    const index = barcodeList.indexOf(tag.barcode)
+    const name = items[index].name
+    const quantity = parseQuantity(tag.quantity, items[index].unit)
+    const unitPrice = items[index].price
+    const subtotal = calculateDiscountedSubtotal(tag.quantity, unitPrice)[0]
+    const discountedPrice = calculateDiscountedSubtotal(tag.quantity, unitPrice)[1]
+    receiptItemList.push({
+      name: name,
+      quantity: quantity,
+      unitPrice: unitPrice,
+      subtotal: subtotal,
+      discountedPrice: discountedPrice
+    })
+  }
 
+  return receiptItemList
+}
+
+function parseQuantity(quantity: number, quantifier: string): Quantity{
+  const q: Quantity = {
+    value: quantity,
+    quantifier: quantifier
+  }
+
+  return q
+}
+
+function calculateDiscountedSubtotal(quantity: number, unitPrice: number): number[]{
+  const numOfFree = Math.floor(Math.floor(quantity) / 3)
+  return [(quantity - numOfFree) * unitPrice, numOfFree * unitPrice]
+}
