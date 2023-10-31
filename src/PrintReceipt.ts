@@ -23,7 +23,7 @@ export function printReceipt(tags: string[]): string {
   const aggregateRes = aggregateTags(res)
   const receiptItems = generateReceiptItems(aggregateRes)
   if(receiptItems === null){
-    return ""
+    return ''
   }
 
   const printRes = renderReceipt(receiptItems)
@@ -69,7 +69,7 @@ function generateReceiptItems(parsedTags: Tag[]): ReceiptItem[] | null{
   const promotion = loadPromotions()[0]
   const barcodeList = Array.from(items, x => x.barcode)
   for(const tag of parsedTags){
-    if(!barcodeList.indexOf(tag.barcode)){
+    if(barcodeList.indexOf(tag.barcode) === -1){
       return null
     }
     const index = barcodeList.indexOf(tag.barcode)

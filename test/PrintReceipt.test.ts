@@ -24,4 +24,21 @@ Discounted prices: 7.50(yuan)
 
     expect(printReceipt(tags)).toEqual(expectText)
   })
+
+  it('should print null when has barcode does not exist', () => {
+    const tags = [
+      'ITEM000006',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000003-2.5',
+      'ITEM000005',
+      'ITEM000005-2',
+    ]
+
+    const expectText = ''
+
+    expect(printReceipt(tags)).toEqual(expectText)
+  })
 })
