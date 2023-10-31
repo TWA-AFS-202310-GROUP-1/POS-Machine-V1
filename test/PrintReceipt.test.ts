@@ -1,4 +1,4 @@
-import {Tag, parseTags} from '../src/PrintReceipt'
+import {ReceiptItem, Tag, generateReceiptItems, parseTags} from '../src/PrintReceipt'
 
 // describe('printReceipt', () => {
 //   it('should print receipt with promotion when print receipt', () => {
@@ -49,5 +49,42 @@ describe('printReceipt', () => {
     ]
     //then
     expect(parseTags(input)).toEqual(expectedOutput)
+  })
+
+  it('should generate correct ReceiptItem', ()=> {
+    //given
+    const input: Tag[] = [
+      { barcode: 'ITEM000001', quantity: 3 },
+      { barcode: 'ITEM000003', quantity: 2.5 },
+      { barcode: 'ITEM000005', quantity: 3 }
+    ]
+
+    //when
+    const expectedOutput: ReceiptItem[] =
+    [
+      {
+        name: 'Sprite',
+        quantity: { value: 3, quantifier: 'bottle' },
+        unitPrice: 3.00,
+        subtotal: 6.00,
+        discountedPrice: 3.00
+      },
+      {
+        name: 'Litchi',
+        quantity: { value: 2.5, quantifier: 'pound' },
+        unitPrice: 15.00,
+        subtotal: 37.50,
+        discountedPrice: 0
+      },
+      {
+        name: 'Instant Noodles',
+        quantity: { value: 3, quantifier: 'bag' },
+        unitPrice: 4.50,
+        subtotal: 9.00,
+        discountedPrice: 4.50
+      }
+    ]
+    //then
+    expect(generateReceiptItems(input)).toEqual(expectedOutput)
   })
 })

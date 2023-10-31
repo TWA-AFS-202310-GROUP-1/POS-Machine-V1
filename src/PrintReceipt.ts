@@ -20,27 +20,58 @@ export type ReceiptItem = {
 }
 
 export function parseTags(tags: string[]): Tag[] {
-  const initialTags = parseQuantity(tags);
+  const initialTags = parseQuantity(tags)
   return initialTags.reduce((accumulatedTags: Tag[], currentTag: Tag) => {
-    const existingTag = accumulatedTags.find(tag => tag.barcode === currentTag.barcode);
+    const existingTag = accumulatedTags.find(tag => tag.barcode === currentTag.barcode)
     if (existingTag) {
-      existingTag.quantity += currentTag.quantity;
+      existingTag.quantity += currentTag.quantity
     } else {
-      accumulatedTags.push(currentTag);
+      accumulatedTags.push(currentTag)
     }
-    return accumulatedTags;
-  }, []);
+    return accumulatedTags
+  }, [])
 }
 
 export function parseQuantity(tags: string[]): Tag[]  {
   return tags.map(tag => {
-    const [barcode, quantity] = tag.split('-');
+    const [barcode, quantity] = tag.split('-')
     return {
       barcode: barcode,
       quantity: quantity ? parseFloat(quantity) : 1
-    };
-});
+    }
+  })
 }
+
+export function generateReceiptItems(parsedTags: Tag[]): ReceiptItem[] {
+  const allItems = loadAllItems()
+  const promotions = loadPromotions()
+
+  return parsedTags.map(tag => {
+    const item = allItems.find(i => i.barcode === tag.barcode)
+    if (!item) throw new Error('Item not found')
+
+    const promo = promotions.find(p => p.barcodes.includes(tag.barcode))
+    let discountedPrice = 0
+    let subtotal = tag.quantity * item.price
+
+    if (promo?.type === 'BUY_TWO_GET_ONE_FREE') {
+      discountedPrice = Math.floor(tag.quantity / 3) * item.price
+      subtotal -= discountedPrice
+    }
+
+    return {
+      name: item.name,
+      quantity: {
+        value: tag.quantity,
+        quantifier: item.unit
+      },
+      unitPrice: item.price,
+      subtotal: subtotal,
+      discountedPrice: discountedPrice
+    }
+  })
+}
+
 
 
 
