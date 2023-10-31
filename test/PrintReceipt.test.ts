@@ -25,3 +25,23 @@ Discounted prices：7.50(yuan)
     expect(printReceipt(tags)).toEqual(expectText)
   })
 })
+
+// eslint-disable-next-line jest/no-identical-title
+describe('printReceipt', () => {
+  it('should print receipt with promotion when print receipt', () => {
+    const tags = [
+      'ITEM000007',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000001',
+      'ITEM000003-2.5',
+      'ITEM000005',
+      'ITEM000005-2',
+    ]
+
+    const expectText = 'The barcodes of tags are not valid!'
+
+    expect(printReceipt(tags)).toEqual(expectText)
+  })
+})
