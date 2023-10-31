@@ -78,7 +78,7 @@ export function renderReceipt(receiptItems: ReceiptItem[]): string {
   let totalDiscount = 0
 
   receiptItems.forEach(item => {
-    receipt += `Name：${item.name}，Quantity：${item.quantity.value} ${item.quantity.quantifier}，Unit：${item.unitPrice.toFixed(2)}(yuan)，Subtotal：${item.subtotal.toFixed(2)}(yuan)\n`
+    receipt += `Name：${item.name}，Quantity：${item.quantity.value} ${item.quantity.quantifier}s，Unit：${item.unitPrice.toFixed(2)}(yuan)，Subtotal：${item.subtotal.toFixed(2)}(yuan)\n`
     total += item.subtotal
     totalDiscount += item.discountedPrice
   })
@@ -91,6 +91,9 @@ export function renderReceipt(receiptItems: ReceiptItem[]): string {
   return receipt
 }
 
-
-
-
+export function printReceipt(tags: string[]): string {
+  const parsedTags = parseTags(tags)
+  const receiptItems = generateReceiptItems(parsedTags)
+  const receipt = renderReceipt(receiptItems)
+  return receipt
+}
