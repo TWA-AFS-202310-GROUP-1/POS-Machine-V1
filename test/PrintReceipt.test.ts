@@ -1,4 +1,4 @@
-import {printReceipt} from '../src/PrintReceipt'
+import {printReceipt} from '../src/PR'
 
 describe('printReceipt', () => {
   it('should print receipt with promotion when print receipt', () => {
