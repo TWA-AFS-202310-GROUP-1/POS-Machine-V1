@@ -2,20 +2,20 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.printReceipt = void 0;
 var Dependencies_1 = require("./Dependencies");
-var RECEIPTITEM = (0, Dependencies_1.loadAllItems)();
-var PROMOTION = (0, Dependencies_1.loadPromotions)();
+var receiptItem = (0, Dependencies_1.loadAllItems)();
+var promotion = (0, Dependencies_1.loadPromotions)();
 var total = 0;
 var savings = 0;
 var itemsMap = {};
 function printReceipt(tags) {
     if (!isValidTag(tags))
-        return "Invalid tag";
+        return 'Invalid tag';
     var receiptLines = [];
     processTags(tags);
     var _loop_1 = function (itemBarcode) {
         var _a = itemsMap[itemBarcode], product = _a.product, quantity = _a.quantity;
         var subtotal = product.price * quantity;
-        var promo = PROMOTION.find(function (item) { return item.barcodes.includes(product.barcode); });
+        var promo = promotion.find(function (item) { return item.barcodes.includes(product.barcode); });
         // Handle promotions
         if (promo && promo.type === 'BUY_TWO_GET_ONE_FREE') {
             var freeItems = Math.floor(quantity / 3);
@@ -41,7 +41,7 @@ function isValidTag(tags) {
         if (!barcode || (quantityStr && isNaN(Number(quantityStr)))) {
             return { value: false };
         }
-        if (!RECEIPTITEM.some(function (p) { return p.barcode === barcode; })) {
+        if (!receiptItem.some(function (p) { return p.barcode === barcode; })) {
             return { value: false };
         }
         if (quantityStr && parseFloat(quantityStr) <= 0) {
@@ -60,7 +60,7 @@ function processTags(tags) {
     var _loop_3 = function (tag) {
         var _a = tag.split('-'), itemBarcode = _a[0], quantityStr = _a[1];
         var quantity = quantityStr ? parseFloat(quantityStr) : 1;
-        var product = RECEIPTITEM.find(function (p) { return p.barcode === itemBarcode; });
+        var product = receiptItem.find(function (p) { return p.barcode === itemBarcode; });
         if (!product)
             return "continue";
         if (itemsMap[product.barcode]) {
@@ -76,14 +76,14 @@ function processTags(tags) {
     }
 }
 function renderReceipt(receiptLines) {
-    var receiptStr = "***<store earning no money>Receipt ***\n";
+    var receiptStr = '***<store earning no money>Receipt ***\n';
     for (var _i = 0, receiptLines_1 = receiptLines; _i < receiptLines_1.length; _i++) {
         var line = receiptLines_1[_i];
-        receiptStr += line + "\n";
+        receiptStr += line + '\n';
     }
-    receiptStr += "----------------------\n";
+    receiptStr += '----------------------\n';
     receiptStr += "Total\uFF1A".concat(total.toFixed(2), "(yuan)\n");
     receiptStr += "Discounted prices\uFF1A".concat(savings.toFixed(2), "(yuan)\n");
-    receiptStr += "**********************";
+    receiptStr += '**********************';
     return receiptStr;
 }
